@@ -1,0 +1,20 @@
+# Ignore environment files  
+expense_env/  
+*.env  
+
+# Ignore Python cache files  
+__pycache__/  
+*.pyc  
+*.pyo  
+*.pyd  
+
+# Ignore VS Code settings  
+.vscode/  
+
+# Ignore Django migrations (optional)  
+**/migrations/**  
+
+# Ignore Docker-related files  
+docker-compose.override.yml  
+docker-compose.yml  
+.env  
