@@ -4,25 +4,30 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/ExpenseTracker.git'
+                git branch: 'main',
+                    credentialsId: 'github-token', 
+                    url: 'https://github.com/nivedr009/ExpenseTracker.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'echo "Building the Expense Tracker App..."'
+                echo "Building the project..."
+                // Add build commands here (e.g., mvn package, npm install, etc.)
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'echo "Running Tests (No tests yet, skipping...)"'
+                echo "Running tests..."
+                // Add test commands here
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'echo "Deployment - Will be configured later"'
+                echo "Deploying application..."
+                // Add deployment commands here
             }
         }
     }
