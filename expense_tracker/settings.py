@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'expenses',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +77,15 @@ WSGI_APPLICATION = 'expense_tracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql', # Specifies that we are using PostgreSQL
+        'NAME': 'expense_db',  # Database name
+        'USER': 'expense_admin',  # PostgreSQL username (default is 'postgres')
+        'PASSWORD': 'expensepass',  # Password for the database user
+        'HOST': 'localhost',  # Database server address ('localhost' if running locally, 'db' if using Docker Compose)
+        'PORT': '5432',  # Port where PostgreSQL is running (default is 5432)
     }
 }
+
 
 
 # Password validation
@@ -120,5 +126,13 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+# Authentication settings
+LOGIN_REDIRECT_URL = '/dashboard/'  # Redirect users to dashboard after login
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect users to login page after logout
+
+# Session settings
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Logout user when browser is closed
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

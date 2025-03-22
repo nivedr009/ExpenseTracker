@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Expense Tracker{% endblock %}
+
+{% block content %}
+
+<div class="sidenav">
+    <div class="login-main-text">
+        <h2 class="sidebar-heading">Expense Tracker</h2>
+        <p>Login or register to access.</p>
+    </div>
+</div>
+
+<div class="main">
+    <div class="col-md-10 col-sm-12">
+        <div class="login-form">
+            <div class="profile-img">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User Image">
+            </div>
+
+            <h3>Sign In</h3>
+
+            <!-- Django Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group input-group">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="form-group input-group">
+                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-dark">Sign In</button>
+            </form>
+
+            <div class="mt-4">
+                <div class="d-flex justify-content-center links">
+                    Don't have an account? <a href="{% url 'register' %}" class="ml-2">Register here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    body {
+        background: linear-gradient(to right, #65c484, #d7f9e2); /* Gradient background */
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Sidebar */
+    .sidenav {
+        height: 100%;
+        width: 40%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #212529; /* Darker background */
+        background-image: url("https://i.postimg.cc/MGbCXNqP/sidebar-dollar.jpg"); /* Add your image here */
+        background-size: cover; /* Ensure the image covers the entire sidebar */
+        background-position: center; /* Center the image */
+        padding-top: 3px;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-main-text h2 {
+        font-size: 52px; /* Make the heading larger */
+        font-weight: bold;
+        margin-bottom: 20px; /* Add space below the heading */
+    }
+
+    .login-main-text p {
+        font-size: 17px; /* Optional: Adjust the font size of the paragraph */
+        margin-top: -8px;
+    }
+
+    .login-main-text {
+        margin-top: 20px; /* Add margin to bring the heading further down */
+    }
+    
+    /* Main Content */
+    .main {
+        margin-left: 20%;
+        transform: translateX(25%);
+        margin-top: -75px;
+        padding: 60px;
+        display: flex;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+    }
+    
+    .login-form {
+        width: 100%;
+        max-width: 575px;
+        background: white;
+        padding: 50px;
+        border-radius: 40px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+        
+    }
+
+    .login-form:hover {
+    transform: scale(1.02); /* Slight enlargement */
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.25); /* More shadow on hover */
+    }
+
+
+    .profile-img img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .btn-dark {
+    width: 100%;
+    background: linear-gradient(45deg, #1c6444, #65c484); /* Green gradient */
+    color: white;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+    }
+
+    .btn-dark:hover {
+        background: linear-gradient(45deg, #65c484, #1c6444); /* Darker green on hover */
+    }
+
+    .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* Sidebar Heading Hover Effect */
+    .sidebar-heading {
+        position: relative;
+        display: inline-block;
+        font-size: 52px; /* Match the existing font size */
+        font-weight: bold;
+        margin-bottom: 20px;
+        cursor: pointer; /* Show pointer cursor on hover */
+    }
+
+    .sidebar-heading::after {
+        content: "Built by Nived R"; /* Text to display on hover */
+        position: absolute;
+        bottom: -12px; /* Position below the heading */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px; /* Adjust font size for the hover text */
+        color: white; /* Text color */
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease-in-out; /* Smooth fade-in effect */
+    }
+
+    .sidebar-heading:hover::after {
+        opacity: 1; /* Show the text on hover */
+    }
+
+</style>
+
+{% endblock %}
