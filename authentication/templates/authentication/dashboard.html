@@ -6,28 +6,28 @@
 
 <style>
     .custom-navbar {
-        background: linear-gradient(to right, #56bf79, #56bf79); /* Green gradient for navbar */
+        background: linear-gradient(to right, #56bf79, #56bf79); 
     }
 
     .custom-navbar .navbar-brand {
-        color: white; /* Navbar brand text color */
+        color: white; 
         font-size: 1.3rem;
         font-weight: bold;
     }
 
     .custom-navbar .nav-link {
-        color: white; /* Navbar link text color */
+        color: white; 
     }
 
     .custom-navbar .nav-link:hover {
-        color: #212529; /* Hover color for navbar links */
+        color: #212529; 
     }
 </style>
 
 <div class="container">
     <h2 class="text-center my-4">Welcome to Your Expense Tracker Dashboard</h2>
 
-    <!-- Success Message (Without Toasts) -->
+    
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == "success" %}
@@ -39,7 +39,7 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Session-Based Success Message (Without Toasts) -->
+    
     {% if request.session.registration_success %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             Registration successful! Welcome to your dashboard.
@@ -48,7 +48,7 @@
     {% endif %}
 
     <div class="row">
-        <!-- Total Expenses Card -->
+        
         <div class="col-md-4">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-header">Total Expenses</div>
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <!-- Monthly Budget Card -->
+        
         <div class="col-md-4">
             <div class="card text-white bg-success mb-3">
                 <div class="card-header">Monthly Budget</div>
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <!-- Add Expense Button -->
+        
         <div class="col-md-4">
             <div class="card text-white bg-warning mb-3">
                 <div class="card-header">Add New Expense</div>
@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <!-- Recent Transactions Table -->
+    
     <div class="card mt-4">
         <div class="card-header bg-secondary text-white">
             Recent Transactions
