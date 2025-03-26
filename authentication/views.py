@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib import messages  # Import messages framework
-
+from expenses.models import Expense
+from django.db import models
 
 # Database connection settings
 DB_CONFIG = {
@@ -39,7 +40,7 @@ def register(request):
         user.save()
         login(request, user)  # Automatically logs in the user
 
-        # ✅ Store success message in session (only shown once)
+        #  Store success message in session (only shown once)
         request.session["registration_success"] = True  
 
         
@@ -70,8 +71,18 @@ def login_view(request):
 
     return render(request, "authentication/login.html")
 
+@login_required
 def dashboard(request):
-    return render(request, "authentication/dashboard.html") 
+    # Calculate total expenses for the logged-in user
+    total_expenses = Expense.objects.filter(user=request.user).aggregate(total=models.Sum('amount'))['total']
+
+    # Fetch the 5 most recent expenses for the logged-in user
+    recent_expenses = Expense.objects.filter(user=request.user).order_by('-date')[:5]
+
+    return render(request, 'authentication/dashboard.html', {
+        'total_expenses': total_expenses,
+        'recent_expenses': recent_expenses,
+    })
 
 def logout_view(request):
     logout(request)

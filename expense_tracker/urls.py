@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('login')),  # Redirects '/' to '/login/'
     path('', include('authentication.urls')),  
+    path('expenses/', include('expenses.urls')),
 ]

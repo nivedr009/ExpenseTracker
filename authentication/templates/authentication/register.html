@@ -20,7 +20,7 @@
 
             <h3>Register</h3>
 
-            
+            <!-- Django Messages -->
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} text-center">
@@ -58,23 +58,23 @@
 <style>
 
 body {
-        background: linear-gradient(to right, #65c484, #d7f9e2); 
+        background: linear-gradient(to right, #65c484, #d7f9e2); /* Gradient background */
         margin: 0;
         padding: 0;
-        overflow-x: hidden; 
+        overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
-    
+    /* Sidebar */
     .sidenav {
         height: 100%;
         width: 40%;
         position: fixed;
         top: 0;
         left: 0;
-        background-color: #212529; 
-        background-image: url("https://i.postimg.cc/MGbCXNqP/sidebar-dollar.jpg"); 
-        background-size: cover; 
-        background-position: center; 
+        background-color: #212529; /* Darker background */
+        background-image: url("https://i.postimg.cc/MGbCXNqP/sidebar-dollar.jpg"); /* Add your image here */
+        background-size: cover; /* Ensure the image covers the entire sidebar */
+        background-position: center; /* Center the image */
         padding-top: 20px;
         color: white;
         text-align: center;
@@ -84,13 +84,13 @@ body {
     }
     
     .register-main-text h2 {
-        font-size: 52px; 
+        font-size: 52px; /* Match login page heading */
         font-weight: bold;
-        margin-bottom: 20px; 
+        margin-bottom: 20px; /* Add space below heading */
     }
     
 
-    
+    /* Main Content */
     .main {
         margin-left: 20%;
         transform: translateX(25%);
@@ -109,18 +109,18 @@ body {
         background: white;
         padding: 50px;
         border-radius: 40px;
-        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5); 
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5); /* Match login form shadow */
     }
 
     .register-main-text p {
-        font-size: 16px; 
+        font-size: 16px; /* Optional: Adjust the font size of the paragraph */
         margin-top: -8px;
     }
 
     .register-form:hover {
-        transform: scale(1.02); 
+        transform: scale(1.02); /* Slight enlargement on hover */
         transition: 0.3s ease-in-out;
-        box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.25); 
+        box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.25); /* More shadow on hover */
     }
 
     .profile-img img {
@@ -132,7 +132,7 @@ body {
 
     .btn-dark {
     width: 100%;
-    background: linear-gradient(45deg, #1c6444, #65c484); 
+    background: linear-gradient(45deg, #1c6444, #65c484); /* Green gradient */
     color: white;
     border: none;
     font-weight: bold;
@@ -140,7 +140,7 @@ body {
     }
 
     .btn-dark:hover {
-        background: linear-gradient(45deg, #65c484, #1c6444); 
+        background: linear-gradient(45deg, #65c484, #1c6444); /* Darker green on hover */
     }
 
     .btn-secondary {
@@ -148,30 +148,30 @@ body {
         margin-top: 10px;
     }
 
-    
+    /* Sidebar Heading Hover Effect */
     .sidebar-heading {
         position: relative;
         display: inline-block;
-        font-size: 52px; 
+        font-size: 52px; /* Match the existing font size */
         font-weight: bold;
         margin-bottom: 20px;
-        cursor: pointer; 
+        cursor: pointer; /* Show pointer cursor on hover */
     }
 
     .sidebar-heading::after {
-        content: "Built by Nived R"; 
+        content: "Built by Nived R"; /* Text to display on hover */
         position: absolute;
-        bottom: -14px; 
+        bottom: -14px; /* Position below the heading */
         left: 50%;
         transform: translateX(-50%);
-        font-size: 16px; 
-        color: white; 
-        opacity: 0; 
-        transition: opacity 0.3s ease-in-out; 
+        font-size: 16px; /* Adjust font size for the hover text */
+        color: white; /* Text color */
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease-in-out; /* Smooth fade-in effect */
     }
 
     .sidebar-heading:hover::after {
-        opacity: 1; 
+        opacity: 1; /* Show the text on hover */
     }
 </style>
 
