@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                sh 'python3 manage.py migrate'
+                sh 'nohup python3 manage.py runserver 0.0.0.0:8000 &'
             }
         }
 
@@ -33,8 +33,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Starting Django application..."
-                sh 'nohup python3 manage.py runserver 0.0.0.0:8000 &'
+                echo "Deploy"
             }
         }
     }
