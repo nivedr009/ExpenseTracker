@@ -20,6 +20,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
+                service postgresql start
+                service postgresql status
                 sh 'python3 manage.py migrate'
             }
         }
