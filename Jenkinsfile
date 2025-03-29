@@ -20,10 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                bat '''
-                    cd /d D:\\Django-Projects\\ExpenseTracker
-                    start /B python manage.py runserver 0.0.0.0:8000
-                '''
+                steps {
+                sh 'echo Building the project...'
+                sh './your-build-script.sh' // If you have a shell script for building
             }
         }
 
