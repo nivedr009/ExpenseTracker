@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'expenses',
     'authentication',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,7 @@ DATABASES = {
         'NAME': 'expense_db',  # Database name
         'USER': 'expense_admin',  # PostgreSQL username (default is 'postgres')
         'PASSWORD': 'expensepass',  # Password for the database user
-        'HOST': 'localhost',  # Database server address ('localhost' if running locally, 'db' if using Docker Compose)
+        'HOST': 'expense-container',  # Database server address ('localhost' if running locally, 'db' if using Docker Compose)
         'PORT': '5432',  # Port where PostgreSQL is running (default is 5432)
     }
 }
