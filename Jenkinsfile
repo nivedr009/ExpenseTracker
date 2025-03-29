@@ -20,9 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                sh '''
-                    cd D:\Django-Projects\ExpenseTracker  # Replace with actual project path
-                    nohup python3 manage.py runserver 0.0.0.0:8000 &
+                bat '''
+                    cd /d D:\\Django-Projects\\ExpenseTracker
+                    start /B python manage.py runserver 0.0.0.0:8000
                 '''
             }
         }
