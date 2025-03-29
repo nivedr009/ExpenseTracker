@@ -20,9 +20,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                steps {
-                sh 'echo Building the project...'
-                sh './your-build-script.sh' // If you have a shell script for building
+                sh 'python3 manage.py runserver 127.0.0.1:8000 &'
+                sleep 5 // Wait for the server to start
             }
         }
 
