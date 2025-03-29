@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                sh 'python3 manage.py runserver 0.0.0.0:8000 &'
+                sh 'python3 manage.py runserver'
                 sleep 5  // Give some time for the server to start
             }
         }
