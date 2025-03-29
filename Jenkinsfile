@@ -21,8 +21,8 @@ pipeline {
             steps {
                 echo "Building the project..."
                 sh 'nohup python3 manage.py runserver 127.0.0.1:8000 > server.log 2>&1 &'
-                sleep 10 // Give the server some time to start
-                sh 'ps aux | grep manage.py' // Verify if the process is running
+                sleep 10
+                sh 'cat server.log' // Check if there are any startup errors
             }
         }
         stage('Run Tests') {
