@@ -2,18 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main',
-                    credentialsId: 'github-token', 
-                    url: 'https://github.com/nivedr009/ExpenseTracker.git'
+                echo 'Checking out code...'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/nivedr009/ExpenseTracker.git',
+                        credentialsId: 'github-token'
+                    ]]
+                ])
             }
         }
 
         stage('Build') {
             steps {
                 echo "Building the project..."
-                // Add build commands here (e.g., mvn package, npm install, etc.)
+                sh 'python3 manage.py migrate'
             }
         }
 
@@ -26,8 +33,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploying application..."
-                // Add deployment commands here
+                echo "Starting Django application..."
+                sh 'nohup python3 manage.py runserver 0.0.0.0:8000 &'
             }
         }
     }
