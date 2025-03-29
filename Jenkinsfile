@@ -20,8 +20,10 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the project..."
-                sh 'python3 manage.py runserver 127.0.0.1:8000 &'
-                sleep 5 // Wait for the server to start
+                sh '''
+                    cd D:\Django-Projects\ExpenseTracker  # Replace with actual project path
+                    nohup python3 manage.py runserver 0.0.0.0:8000 &
+                '''
             }
         }
 
