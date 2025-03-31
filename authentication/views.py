@@ -9,6 +9,9 @@ from django.shortcuts import redirect
 from django.contrib import messages  # Import messages framework
 from expenses.models import Expense
 from django.db import models
+from django.db.models import Sum
+from django.utils.timezone import now
+from datetime import datetime
 
 # Database connection settings
 DB_CONFIG = {
@@ -73,15 +76,53 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-    # Calculate total expenses for the logged-in user
-    total_expenses = Expense.objects.filter(user=request.user).aggregate(total=models.Sum('amount'))['total']
 
-    # Fetch the 5 most recent expenses for the logged-in user
+     # Get the current month and year
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    # Get the current date
+    today = now()
+
+    ## Filter the total income for the current month and for the logged-in user
+    total_income = Expense.objects.filter(
+        user=request.user,  # Filter by the current user
+        transaction_type='Credit',
+        date__month=current_month,
+        date__year=current_year
+    ).aggregate(Sum('amount'))['amount__sum'] or 0  # Default to 0 if no data is found
+
+    # Calculate total expenses (Debit transactions) for the current month and for the logged-in user
+    total_expenses = Expense.objects.filter(
+        user=request.user,  # Filter by the current user
+        transaction_type='Debit',
+        date__year=today.year,  # Filter by the current year
+        date__month=today.month  # Filter by the current month
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
+    # Fetch the 5 most recent transactions for the logged-in user
     recent_expenses = Expense.objects.filter(user=request.user).order_by('-date')[:5]
 
+    # Calculate cumulative income (Credit transactions) for all time and for the logged-in user
+    total_income_all_time = Expense.objects.filter(
+        user=request.user,  # Filter by the current user
+        transaction_type='Credit'
+    ).aggregate(Sum('amount'))['amount__sum'] or 0  # Default to 0 if no data is found
+
+    # Calculate cumulative expenses (Debit transactions) for all time and for the logged-in user
+    total_expenses_all_time = Expense.objects.filter(
+        user=request.user,  # Filter by the current user
+        transaction_type='Debit'
+    ).aggregate(Sum('amount'))['amount__sum'] or 0  # Default to 0 if no data is found
+
+    # Calculate cumulative balance (total income - total expenses for all time)
+    cumulative_balance = total_income_all_time - total_expenses_all_time
+
     return render(request, 'authentication/dashboard.html', {
+        'total_income': total_income,
         'total_expenses': total_expenses,
         'recent_expenses': recent_expenses,
+        'cumulative_balance': cumulative_balance,
     })
 
 def logout_view(request):

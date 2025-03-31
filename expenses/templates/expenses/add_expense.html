@@ -1,18 +1,398 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Expense{% endblock %}
+{% load widget_tweaks %}
+
+{% block title %}Add Transaction{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center">Add Expense</h2>
+<div class="container mt-5" id="transaction-container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary btn-block">Add Expense</button>
-            </form>
+            <!-- Back to Dashboard Button -->
+            <a href="{% url 'dashboard' %}" class="btn btn-danger mb-0 back-to-dashboard-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <div class="card shadow">
+                <div class="card-header text-white text-center" id="transaction-header">
+                    <h4>Add Transaction</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Display messages -->
+                    {% if messages %}
+                        <div class="fixed-message-container">
+                            {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'add_expense' %}">
+                        {% csrf_token %}
+                        <!-- Transaction Type Tabs -->
+                        <ul class="nav nav-tabs mb-4" id="transaction-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active credit-tab" id="credit-tab" data-type="Credit" href="#">Credit</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link debit-tab" id="debit-tab" data-type="Debit" href="#">Debit</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Hidden Input for Transaction Type -->
+                        <input type="hidden" name="transaction_type" id="transaction_type" value="Credit">
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="id_category" class="form-label">Category</label>
+                            {{ form.category|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-3">
+                            <label for="id_amount" class="form-label">Amount</label>
+                            {{ form.amount|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">Description</label>
+                            {{ form.description|add_class:"form-control" }}
+                        </div>
+                        <!-- Date -->
+                        <div class="mb-3">
+                            <label for="id_date" class="form-label">Date</label>
+                            {{ form.date|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-success w-100" id="add-transaction-btn">Add Transaction</button>
+                        
+                        <!-- Logout Confirmation Modal -->
+                        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to log out?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Function to set initial colors based on the default transaction type
+    function setInitialColors() {
+    const transactionType = document.getElementById('transaction_type').value;
+    const addTransactionBtn = document.getElementById('add-transaction-btn');
+    const transactionHeader = document.getElementById('transaction-header');
+    const creditTab = document.getElementById('credit-tab');
+    const debitTab = document.getElementById('debit-tab');
+    const amountTextbox = document.getElementById('id_amount'); // Target the Django form field
+
+    if (transactionType === 'Credit') {
+        addTransactionBtn.classList.add('btn-success'); // Green button for Credit
+        transactionHeader.style.backgroundColor = '#28a745'; // Green header for Credit
+        creditTab.classList.add('bg-success', 'text-white'); // Green tab for Credit
+        debitTab.classList.remove('bg-danger', 'text-white');
+        if (amountTextbox) {
+            amountTextbox.placeholder = '+'; // Set placeholder to +
+        }
+    } else if (transactionType === 'Debit') {
+        addTransactionBtn.classList.add('btn-danger'); // Red button for Debit
+        transactionHeader.style.backgroundColor = '#dc3545'; // Red header for Debit
+        debitTab.classList.add('bg-danger', 'text-white'); // Red tab for Debit
+        creditTab.classList.remove('bg-success', 'text-white');
+        if (amountTextbox) {
+            amountTextbox.placeholder = '-'; // Set placeholder to -
+        }
+    }
+}
+
+    // JavaScript to handle tab selection and button/heading/tab color change
+    document.querySelectorAll('#transaction-tabs .nav-link').forEach(tab => {
+    tab.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Remove active class from all tabs
+        document.querySelectorAll('#transaction-tabs .nav-link').forEach(t => t.classList.remove('active'));
+
+        // Add active class to the clicked tab
+        this.classList.add('active');
+
+        // Update the hidden input value
+        const transactionType = this.getAttribute('data-type');
+        document.getElementById('transaction_type').value = transactionType;
+
+        // Change the Add Transaction button color, header background color, and tab colors
+        const addTransactionBtn = document.getElementById('add-transaction-btn');
+        const transactionHeader = document.getElementById('transaction-header');
+        const creditTab = document.getElementById('credit-tab');
+        const debitTab = document.getElementById('debit-tab');
+        const amountTextbox = document.getElementById('id_amount'); // Target the Django form field
+
+        // Debugging: Ensure the amountTextbox is selected
+        console.log('Amount Textbox:', amountTextbox);
+
+        if (transactionType === 'Credit') {
+            addTransactionBtn.classList.remove('btn-danger');
+            addTransactionBtn.classList.add('btn-success'); // Green button for Credit
+            transactionHeader.style.backgroundColor = '#28a745'; // Green header for Credit
+            creditTab.classList.add('bg-success', 'text-white'); // Green tab for Credit
+            debitTab.classList.remove('bg-danger', 'text-white');
+            if (amountTextbox) {
+                amountTextbox.placeholder = '+'; // Set placeholder to +
+            }
+        } else if (transactionType === 'Debit') {
+            addTransactionBtn.classList.remove('btn-success');
+            addTransactionBtn.classList.add('btn-danger'); // Red button for Debit
+            transactionHeader.style.backgroundColor = '#dc3545'; // Red header for Debit
+            debitTab.classList.add('bg-danger', 'text-white'); // Red tab for Debit
+            creditTab.classList.remove('bg-success', 'text-white');
+            if (amountTextbox) {
+                amountTextbox.placeholder = '-'; // Set placeholder to -
+            }
+        }
+    });
+});
+
+document.getElementById('add-transaction-btn').addEventListener('click', function () {
+    console.log('Add Transaction button clicked');
+});
+
+    // Set initial colors when the page loads
+    document.addEventListener('DOMContentLoaded', setInitialColors);
+
+// Automatically hide the success message after 3 seconds
+document.addEventListener('DOMContentLoaded', function () {
+        const successAlert = document.querySelector('.alert-success');
+        if (successAlert) {
+            setTimeout(function () {
+                successAlert.classList.add('fade'); // Add fade class to hide the alert
+                successAlert.style.opacity = '0'; // Smoothly fade out
+                setTimeout(() => successAlert.remove(), 500); // Remove the element after fading out
+            }, 3000); // 3 seconds
+        }
+    });
+
+</script>
+
+<style>
+    .custom-navbar {
+        background: linear-gradient(to right, #56bf79, #56bf79); /* Green gradient for navbar */
+    }
+
+    .custom-navbar .navbar-brand {
+        color: white; /* Navbar brand text color */
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .custom-navbar .nav-link {
+        color: white; /* Navbar link text color */
+    }
+
+    .custom-navbar .nav-link:hover {
+        color: #212529; /* Hover color for navbar links */
+    }
+
+     /* Custom styles for tabs and container */
+     #transaction-container {
+    margin-top: -5cm !important; /* Move the container up by 1 cm */
+    padding-top: 20px; /* Optional: Keep some padding for spacing */
+    transition: background-color 0.5s ease; /* Smooth background color transition */
+    border-radius: 10px;
+    }
+
+    .nav-tabs .nav-link {
+        color: #495057; /* Default tab text color */
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: #0d6efd; /* Default active tab background color */
+        color: white; /* Active tab text color */
+    }
+
+    /* Ensure the active Credit tab is green */
+    .nav-tabs .nav-link.active.bg-success {
+        background-color: #28a745 !important; /* Green background for active Credit tab */
+        color: white !important; /* White text for active Credit tab */
+    }
+
+    /* Ensure the active Debit tab is red */
+    .nav-tabs .nav-link.active.bg-danger {
+        background-color: #dc3545 !important; /* Red background for active Debit tab */
+        color: white !important; /* White text for active Debit tab */
+    }
+
+    .bg-success {
+        background-color: #28a745 !important; /* Green background for Credit */
+    }
+
+    .bg-danger {
+        background-color: #dc3545 !important; /* Red background for Debit */
+    }
+
+    .text-white {
+        color: white !important; /* White text for active tabs */
+    }
+
+    #transaction-header {
+        transition: background-color 0.8s ease; /* Smooth header color transition */
+    }
+
+    #add-transaction-btn {
+        transition: background-color 0.8s ease; /* Smooth button color transition */
+    }
+
+    .btn-success {
+        background-color: #28a745 !important; /* Set the green color for the button */
+        border-color: #28a745 !important; /* Match the border color */
+    }
+
+    .btn-success:hover {
+        background-color: #218838 !important; /* Slightly darker green for hover */
+        border-color: #1e7e34 !important; /* Match the hover border color */
+    }
+
+    /* Style the placeholder option in the dropdown */
+    .category-dropdown option:disabled {
+        color: grey !important; /* Set the placeholder text color to grey */
+    }
+
+    .fixed-message-container {
+        position: fixed;
+        top: 65px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 900; /* Ensure it appears above other elements */
+        width: 100%; /* Adjust width as needed */
+        max-width: 800px; /* Limit the maximum width */
+    }
+
+    #transaction-container {
+        margin-top: -1cm !important; /* Remove any top margin */
+        padding-top: 20px; /* Optional: Add some padding for spacing */
+    }
+
+    .back-to-dashboard-btn {
+    margin-top: 0cm !important; /* Move the button up by 1 cm */
+    }
+
+    * Sidebar styles */
+.sidebar {
+    height: 100%; /* Full height */
+    width: 0; /* Initially hidden */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #f8f9fa; /* Light gray background */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* Smooth transition */
+    padding: 0; /* Remove padding at the top */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Sidebar close button */
+.sidebar .closebtn {
+    position: absolute;
+    top: -5px; /* Adjust the top position */
+    right: 5px; /* Adjust the right position */
+    font-size: 36px; /* Set the font size */
+    color: #333; /* Darker close button color */
+    cursor: pointer;
+    line-height: 1; /* Ensure no extra space below the button */
+    text-decoration: none; /* Remove any underline or dash */
+    border: none; /* Remove any border */
+    background: none; /* Ensure no background is applied */
+}
+
+.sidebar .closebtn:hover {
+    color: rgb(253, 253, 253); /* Change to red on hover */
+}
+
+/* Sidebar header */
+.sidebar-header {
+    padding: 30px 30px 30px 30px; /* Increase top padding to extend the green area */
+    text-align: center;
+    background-color: #56bf79; /* Green background */
+    color: white; /* White text */
+    border-bottom: 1px solid #000000;
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sidebar-menu li a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #333; /* Dark text */
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.sidebar-menu li a i {
+    margin-right: 10px; /* Add spacing between icon and text */
+}
+
+.sidebar-menu li a:hover {
+    background-color: #56bf79; /* Green  hover background */
+    color: white; /* White text on hover */
+    border-radius: 5px;
+}
+
+/* Sidebar profile image */
+.sidebar-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Make it circular */
+    border: 3px solid rgb(3, 0, 0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow */
+}
+
+.modal-content {
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+.modal-header {
+    background-color: #dc3545; /* Red background */
+    color: white; /* White text */
+}
+
+.modal-footer .btn-danger {
+    background-color: #dc3545; /* Match the red theme */
+    border-color: #dc3545;
+}
+</style>
 {% endblock %}

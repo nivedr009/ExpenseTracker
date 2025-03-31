@@ -12,7 +12,10 @@ def add_expense(request):
             expense = form.save(commit=False)
             expense.user = request.user  # Link the expense to the logged-in user
             expense.save()
-            return redirect('dashboard')  # Redirect to the dashboard after saving
+            messages.success(request, "Record added successfully!")
+            return render(request, 'expenses/add_expense.html', {'form': ExpenseForm()})  # Render the same page with a new form
+        else:
+            messages.error(request, "There was an error in the form. Please correct it.")
     else:
         form = ExpenseForm()
     return render(request, 'expenses/add_expense.html', {'form': form})
@@ -24,18 +27,23 @@ def list_expenses(request):
 
 @login_required
 def edit_expense(request, expense_id):
-    expense = get_object_or_404(Expense, id=expense_id, user=request.user)  # Ensure the expense belongs to the logged-in user
+    expense = get_object_or_404(Expense, id=expense_id, user=request.user)
 
     if request.method == 'POST':
-        form = ExpenseForm(request.POST, instance=expense)  # Bind the form to the existing expense
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Expense updated successfully!")
-            return redirect('list_expenses')  # Redirect to the expenses list page
-    else:
-        form = ExpenseForm(instance=expense)  # Pre-fill the form with the existing expense data
+        # Update the fields from the form
+        expense.transaction_type = request.POST.get('transaction_type')
+        expense.category = request.POST.get('category')
+        expense.amount = request.POST.get('amount')
+        expense.description = request.POST.get('description')
+        expense.date = request.POST.get('date')  # Update the date field
+        expense.save()  # Save the updated expense to the database
+        
+        # Add success message after saving
+        messages.success(request, "Expense updated successfully!")  
 
-    return render(request, 'expenses/edit_expense.html', {'form': form, 'expense': expense})
+        return redirect('list_expenses')  # Redirect to the list page after saving
+
+    return render(request, 'expenses/edit_expense.html', {'expense': expense})
 
 @login_required
 def delete_expense(request, expense_id):

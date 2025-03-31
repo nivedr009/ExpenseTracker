@@ -22,61 +22,148 @@
     .custom-navbar .nav-link:hover {
         color: #212529; /* Hover color for navbar links */
     }
+
+/* Sidebar styles */
+.sidebar {
+    height: 100%; /* Full height */
+    width: 0; /* Initially hidden */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #f8f9fa; /* Light gray background */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* Smooth transition */
+    padding: 0; /* Remove padding at the top */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Sidebar close button */
+.sidebar .closebtn {
+    position: absolute;
+    top: -5px; /* Adjust the top position */
+    right: 5px; /* Adjust the right position */
+    font-size: 36px; /* Set the font size */
+    color: #333; /* Darker close button color */
+    cursor: pointer;
+    line-height: 1; /* Ensure no extra space below the button */
+    text-decoration: none; /* Remove any underline or dash */
+    border: none; /* Remove any border */
+    background: none; /* Ensure no background is applied */
+}
+
+.sidebar .closebtn:hover {
+    color: rgb(253, 253, 253); /* Change to red on hover */
+}
+
+/* Sidebar header */
+.sidebar-header {
+    padding: 30px 30px 30px 30px; /* Increase top padding to extend the green area */
+    text-align: center;
+    background-color: #56bf79; /* Green background */
+    color: white; /* White text */
+    border-bottom: 1px solid #000000;
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sidebar-menu li a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #333; /* Dark text */
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.sidebar-menu li a i {
+    margin-right: 10px; /* Add spacing between icon and text */
+}
+
+.sidebar-menu li a:hover {
+    background-color: #56bf79; /* Green  hover background */
+    color: white; /* White text on hover */
+    border-radius: 5px;
+}
+
+/* Sidebar profile image */
+.sidebar-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Make it circular */
+    border: 3px solid rgb(3, 0, 0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow */
+}
+
+.modal-content {
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+.modal-header {
+    background-color: #dc3545; /* Red background */
+    color: white; /* White text */
+}
+
+.modal-footer .btn-danger {
+    background-color: #dc3545; /* Match the red theme */
+    border-color: #dc3545;
+}
+
 </style>
 
 <div class="container">
-    <h2 class="text-center my-4">Welcome to Your Expense Tracker Dashboard</h2>
+    <h2 class="text-center my-4">Welcome to Your Expense Tracker Dashboard !!!</h2>
+    
+    <div class="row text-center">
 
-    <!-- Success Message (Without Toasts) -->
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags == "success" %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
-    <!-- Session-Based Success Message (Without Toasts) -->
-    {% if request.session.registration_success %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            Registration successful! Welcome to your dashboard.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endif %}
-
-    <div class="row">
-        <!-- Total Expenses Card -->
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Total Expenses</div>
+        <!-- Cumulative Balance -->
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-white bg-success"> 
+                <div class="card-header">Current Balance</div>
                 <div class="card-body">
-                    <h4 class="card-title">${{ total_expenses|default:"0.00" }}</h4>
-                    <p class="card-text">Track your total spending here.</p>
+                    <h5 class="card-title">₹{{ cumulative_balance }}</h5>
                 </div>
             </div>
         </div>
 
-        <!-- Monthly Budget Card -->
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Monthly Budget</div>
+        <!-- Total Income Card -->
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-white bg-primary"> 
+                <div class="card-header">Total Income (This Month)</div>
                 <div class="card-body">
-                    <h4 class="card-title">$1000</h4>
-                    <p class="card-text">Your set monthly budget.</p>
+                    <h5 class="card-title">₹{{ total_income }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Expenses Card -->
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-header">Total Expenses (This Month)</div>
+                <div class="card-body">
+                    <h5 class="card-title">₹{{ total_expenses }}</h5>
                 </div>
             </div>
         </div>
 
         <!-- Add Expense Button -->
-        <div class="col-md-4">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-header">Add New Expense</div>
-                <div class="card-body text-center">
-                    <a href="{% url 'add_expense' %}" class="btn btn-dark">+ Add Expense</a>
-                    <a href="{% url 'list_expenses' %}" class="btn btn-light mt-2">View Expenses</a>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-header">Transactions</div>
+                <div class="card-body">
+                    <a href="{% url 'add_expense' %}" class="btn btn-dark btn-sm">+ Add Record</a>
+                    <a href="{% url 'list_expenses' %}" class="btn btn-light btn-sm">View Records</a>
                 </div>
             </div>
         </div>
@@ -103,7 +190,7 @@
                             <td>{{ expense.date }}</td>
                             <td>{{ expense.category }}</td>
                             <td>{{ expense.description|default:"-" }}</td>
-                            <td>${{ expense.amount }}</td>
+                            <td>₹{{ expense.amount }}</td>
                         </tr>
                     {% empty %}
                         <tr>
@@ -114,5 +201,85 @@
             </table>
         </div>
     </div>
-</div>
+
+    <div id="user-sidebar" class="sidebar">
+        <a href="#" class="closebtn" id="close-sidebar">&times;</a>
+        <div class="sidebar-header text-center">
+            <!-- Profile Image -->
+            <div class="profile-image">
+                <img src="https://i.postimg.cc/wT4q6Rv1/profile-icon-design-free-vector-1.jpg" alt="User Profile">
+            </div>
+            <h4>{{ request.user.username }}</h4>
+            <p class="text-muted">{{ request.user.email }}</p>
+        </div>
+        <hr>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{% url 'list_expenses' %}"><i class="fas fa-list"></i> View Record</a></li>
+            <li><a href="{% url 'add_expense' %}"><i class="fas fa-plus"></i> Add Record</a></li>
+            <li>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const openSidebarButton = document.getElementById("open-sidebar");
+    const closeSidebarButton = document.getElementById("close-sidebar");
+    const sidebar = document.getElementById("user-sidebar");
+
+    // Open or close the sidebar when the "User Panel" button is clicked
+    openSidebarButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (sidebar.style.width === "250px") {
+            sidebar.style.width = "0"; // Close the sidebar if it's already open
+        } else {
+            sidebar.style.width = "250px"; // Open the sidebar
+        }
+    });
+
+    // Close the sidebar when the close button is clicked
+    closeSidebarButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        sidebar.style.width = "0";
+    });
+
+    // Close the sidebar when clicking anywhere outside of it
+    document.addEventListener("click", function (e) {
+        if (!sidebar.contains(e.target) && e.target !== openSidebarButton) {
+            sidebar.style.width = "0";
+        }
+    });
+
+         // Automatically hide the success message after 3 seconds
+        setTimeout(function () {
+            const alert = document.querySelector('.alert-success');
+            if (alert) {
+                alert.classList.remove('show'); // Hide the alert
+                alert.classList.add('fade'); // Add fade-out effect
+            }
+        }, 3000); // 3000 milliseconds = 3 seconds
+    </script>
+
 {% endblock %}
