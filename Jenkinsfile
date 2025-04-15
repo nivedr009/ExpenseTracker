@@ -18,20 +18,22 @@ pipeline {
         }
 
         stage('Build') {
-            echo 'Building Docker image...'
-            bat 'docker build -t expense-tracker .'
+            steps {
+                echo 'Building Docker image...'
+                bat 'docker build -t expense-tracker .'
+            }
         }
 
         stage('Run Tests') {
             steps {
-                echo "Running tests..."
+                echo 'Running tests...'
                 // Add test commands here
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying the application..."
+                echo 'Deploying the application...'
                 // Add deployment commands here
             }
         }
