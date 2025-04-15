@@ -18,17 +18,8 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                echo "Building Docker image..."
-                script {
-                    // Build the Docker image with the application code
-                    def imageName = 'expense-tracker-image'
-                    def dockerfilePath = '.' // Path to Dockerfile (default is current directory)
-                    
-                    // Build the Docker image
-                    sh "docker build -t ${imageName} ${dockerfilePath}"
-                }
-            }
+            echo 'Building Docker image...'
+            bat 'docker build -t expense-tracker .'
         }
 
         stage('Run Tests') {
