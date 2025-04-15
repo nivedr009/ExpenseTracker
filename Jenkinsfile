@@ -11,7 +11,7 @@ pipeline {
                     extensions: [],
                     userRemoteConfigs: [[
                         url: 'https://github.com/nivedr009/ExpenseTracker.git',
-                        credentialsId: 'github-token'
+                        credentialsId: 'expenseid'
                     ]]
                 ])
             }
