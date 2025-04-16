@@ -19,22 +19,21 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building Docker image...'
-                bat 'docker build -t expense-tracker .'
+                echo 'Building Docker Compose services...'
+                bat 'docker-compose build'
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo 'Running tests...'
-                // Add test commands here
+                echo 'Skipping tests for now...'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying the application...'
-                // Add deployment commands here
+                echo 'Deploying the application using Docker Compose...'
+                bat 'docker-compose up -d'
             }
         }
     }
