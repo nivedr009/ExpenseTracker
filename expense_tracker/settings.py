@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'expense_tracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql', # Specifies that we are using PostgreSQL
-        'NAME': 'expense_db',  # Database name
-        'USER': 'expense_admin',  # PostgreSQL username (default is 'postgres')
-        'PASSWORD': 'expensepass',  # Password for the database user
-        'HOST': 'localhost',  # Database server address ('localhost' if running locally, 'db' if using Docker Compose)
-        'PORT': '5432',  # Port where PostgreSQL is running (default is 5432)
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'expense_db'),  # Database name
+        'USER': os.getenv('DB_USER', 'expense_admin'),  # PostgreSQL username
+        'PASSWORD': os.getenv('DB_PASSWORD', 'expensepass'),  # Password for the database user
+        'HOST': os.getenv('DB_HOST', 'db'),  # Use 'db' as the hostname for Docker Compose
+        'PORT': os.getenv('DB_PORT', '5432'),  # Port where PostgreSQL is running
     }
 }
 
