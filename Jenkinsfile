@@ -17,38 +17,23 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing dependencies from requirements.txt...'
-                sh 'pip install -r requirements.txt'
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
                 echo 'Building Docker Compose services...'
                 bat 'docker-compose -p expensetracker build'
             }
         }
 
-        stage('Deploy Application') {
+        stage('Deploy') {
             steps {
                 echo 'Deploying the application using Docker Compose...'
                 bat 'docker-compose -p expensetracker up -d'
             }
         }
 
-        stage('Wait for Server to be Ready') {
-            steps {
-                echo 'Waiting for the server to be fully up and running...'
-                // Wait for the server to be available (e.g., 10 seconds)
-                sleep 3
-            }
-        }
-
         stage('Run Tests') {
             steps {
-                echo 'Running automated tests...'
+                echo 'Running unit tests...'
                 bat 'pytest tests/'
             }
         }
