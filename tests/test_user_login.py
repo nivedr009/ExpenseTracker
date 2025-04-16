@@ -1,16 +1,15 @@
-# Updated test with delays and better assertion
 import pytest
 import time
-from selenium.webdriver import Edge
-from selenium.webdriver.edge.service import Service as EdgeService
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class TestUserLoginwithCorrectCredentials:
     def setup_method(self, method):
-        service = EdgeService(executable_path="C:\\Users\\NIVED\\Downloads\\edgedriver_win64\\msedgedriver.exe")
-        self.driver = Edge(service=service)
+        service = ChromeService(executable_path="C:\\chromedriver\\chromedriver.exe")  # Update path to ChromeDriver
+        self.driver = Chrome(service=service)
         self.driver.maximize_window()
         self.vars = {}
 
