@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building Docker Compose services...'
-                bat 'docker-compose build'
+                bat 'docker-compose -p expensetracker build'
             }
         }
 
@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying the application using Docker Compose...'
-                bat 'docker-compose up -d'
+                bat 'docker-compose -p expensetracker up -d'
             }
         }
     }
