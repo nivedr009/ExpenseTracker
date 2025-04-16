@@ -34,7 +34,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running unit tests...'
-                bat 'pytest tests/'
+                bat 'docker-compose -p expensetracker run --rm web pytest tests/'
             }
         }
     }
