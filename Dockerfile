@@ -25,6 +25,9 @@ RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com
     && rm chromedriver_linux64.zip \
     && chmod +x /usr/local/bin/chromedriver
 
+# Install webdriver-manager
+RUN pip install webdriver-manager
+
 # Set environment variables for headless Chrome and ChromeDriver path
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

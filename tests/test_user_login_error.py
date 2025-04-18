@@ -1,10 +1,11 @@
 import pytest
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager  # Add this import
 
 class TestUserLoginErrorMessagewithIncorrectCredentials:
     def setup_method(self, method):
@@ -13,8 +14,9 @@ class TestUserLoginErrorMessagewithIncorrectCredentials:
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
-        service = ChromeService()
-        self.driver = Chrome(service=service, options=chrome_options)
+        # Use webdriver-manager to automatically download and set up ChromeDriver
+        service = Service(ChromeDriverManager().install())  # Use ChromeDriverManager to handle ChromeDriver installation
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
 
     def teardown_method(self, method):
