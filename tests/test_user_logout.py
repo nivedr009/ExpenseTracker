@@ -39,8 +39,10 @@ class TestLogout:
       login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
       login_button.click()
 
-      print("🧭 Clicking logout button to open modal...")
-      logout_button = self.wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Logout")))
+      print("🔄 Waiting for logout button (modal trigger)...")
+      logout_button = self.wait.until(
+          EC.element_to_be_clickable((By.CSS_SELECTOR, "a.btn-danger[data-bs-target='#logoutModal']"))
+      )
       logout_button.click()
 
       print("⏳ Waiting for modal logout confirmation link...")
