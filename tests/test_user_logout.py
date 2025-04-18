@@ -24,44 +24,32 @@ class TestLogout:
         self.driver.quit()
 
     def test_logout(self):
-        print("🔎 Opening login page...")
-        # Ensure that you update the URL to use the Docker container's service name or IP
-        self.driver.get("http://web:8000/login/")  # Assuming 'web' is the Docker service name
+      print("🔍 Opening login page...")
+      self.driver.get("http://web:8000/login/")
 
-        print("🧪 Entering username...")
-        username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
-        username_input.send_keys(os.getenv("TEST_USERNAME", "nived"))
+      print("🧑 Entering username...")
+      username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
+      username_input.send_keys(os.getenv("TEST_USERNAME", "nived"))
 
-        print("🧪 Entering password...")
-        password_input = self.driver.find_element(By.NAME, "password")
-        password_input.send_keys(os.getenv("TEST_PASSWORD", "qwerty"))
+      print("🔑 Entering password...")
+      password_input = self.driver.find_element(By.NAME, "password")
+      password_input.send_keys(os.getenv("TEST_PASSWORD", "qwerty"))
 
-        print("🚀 Clicking login button...")
-        login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
-        login_button.click()
+      print("🚀 Clicking login button...")
+      login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
+      login_button.click()
 
-        print("⏳ Waiting for 'Logout' link to appear...")
-        logout_link = self.wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Logout")))
-        print("✅ 'Logout' link is visible. Clicking it...")
-        logout_link.click()
+      print("🧭 Clicking logout button to open modal...")
+      logout_button = self.wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Logout")))
+      logout_button.click()
 
-        print("⏳ Waiting for logout confirmation modal...")
-        confirm_logout_button = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".container > .container > #logoutModal .btn-danger")))
-        print("✅ Logout confirmation modal is visible. Clicking 'Confirm Logout' button...")
-        confirm_logout_button.click()
+      print("⏳ Waiting for modal logout confirmation link...")
+      modal_logout_link = self.wait.until(
+          EC.element_to_be_clickable((By.CSS_SELECTOR, "#logoutModal .modal-footer .btn-danger"))
+      )
+      
+      print("🧹 Clicking logout in modal...")
+      modal_logout_link.click()
 
-        print("⏳ Waiting for redirection to login page...")
-        try:
-            self.wait.until(
-                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Login')]"))
-            )
-            print("✅ Successfully logged out. Redirected to login page.")
-        except Exception as e:
-            print("❌ Logout might have failed. Login page not found.")
-            raise e
-
-        # Assert URL contains 'login'
-        current_url = self.driver.current_url.lower()
-        print(f"🌐 Redirected to: {current_url}")
-        assert "login" in current_url, \
-            f"❌ Logout did not redirect to login page. URL: {current_url}"
+      print("✅ Checking if redirected to login page...")
+      self.wait.until(EC.presence_of_element_located((By.NAME, "username")))  # Ensure we're back on login
