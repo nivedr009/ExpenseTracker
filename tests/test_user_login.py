@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager  # Add this import
+import os  # For handling environment variables
 
 class TestUserLoginwithCorrectCredentials:
     def setup_method(self, method):
@@ -24,15 +25,16 @@ class TestUserLoginwithCorrectCredentials:
 
     def test_userLoginwithCorrectCredentials(self):
         print("🔎 Opening login page...")
-        self.driver.get("http://localhost:8000/login/")
+        # Ensure that you update the URL to use the Docker container's service name or IP
+        self.driver.get("http://web:8000/login/")  # Assuming 'web' is the Docker service name
 
         print("🧪 Entering username...")
         username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
-        username_input.send_keys("nived")
+        username_input.send_keys(os.getenv("TEST_USERNAME", "nived"))
 
         print("🧪 Entering password...")
         password_input = self.driver.find_element(By.NAME, "password")
-        password_input.send_keys("qwerty")
+        password_input.send_keys(os.getenv("TEST_PASSWORD", "qwerty"))
 
         print("🚀 Clicking login button...")
         login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
