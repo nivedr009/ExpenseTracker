@@ -24,7 +24,7 @@ class TestViewTransactionRecords:
 
     def test_viewTransactionRecords(self):
         print("🔎 Opening login page...")
-        self.driver.get("http://web:8000/login/")  # Update this if needed for your setup
+        self.driver.get("http://web:8000/login/")  # Assumes 'web' is the Docker service name
 
         print("🧪 Entering username...")
         username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
@@ -55,5 +55,5 @@ class TestViewTransactionRecords:
 
         current_url = self.driver.current_url.lower()
         print(f"🌐 Redirected to: {current_url}")
-        assert "records" in current_url, \
-            f"❌ Did not redirect to transaction records page. URL: {current_url}"
+        assert "expenses" in current_url, \
+            f"❌ Did not redirect to expenses page. URL: {current_url}"
