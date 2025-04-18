@@ -1,5 +1,4 @@
 import pytest
-import time
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
@@ -9,43 +8,43 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestUserLoginErrorMessagewithIncorrectCredentials:
     def setup_method(self, method):
-        # Set up Chrome options to run in headless mode
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run Chrome in headless mode
-        chrome_options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for Docker)
-        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome Docker's limited memory
-        chrome_options.add_argument("--remote-debugging-port=9222")  # Optional for debugging
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-        # Set the executable path of ChromeDriver inside the Docker container
-        service = ChromeService(executable_path="/usr/local/bin/chromedriver")  # Path in Docker container
-        self.driver = Chrome(service=service, options=chrome_options)  # Pass Chrome options
-        self.driver.maximize_window()
-        self.vars = {}
+        service = ChromeService()
+        self.driver = Chrome(service=service, options=chrome_options)
+        self.wait = WebDriverWait(self.driver, 10)
 
     def teardown_method(self, method):
         self.driver.quit()
 
     def test_userLoginErrorMessagewithIncorrectCredentials(self):
-        self.driver.get("http://localhost:8000/login/")  # URL for your Django app
-        time.sleep(0.5)
+        print("🔎 Opening login page...")
+        self.driver.get("http://localhost:8000/login/")
 
-        self.driver.find_element(By.NAME, "username").send_keys("nived")
-        time.sleep(0.5)
+        print("🧪 Entering username...")
+        username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
+        username_input.send_keys("nived")
 
-        self.driver.find_element(By.NAME, "password").send_keys("123456")  # Incorrect password
-        time.sleep(0.5)
+        print("🧪 Entering incorrect password...")
+        password_input = self.driver.find_element(By.NAME, "password")
+        password_input.send_keys("123456")  # Incorrect password
 
-        self.driver.find_element(By.CSS_SELECTOR, ".btn-dark").click()
-        time.sleep(2)
+        print("🚀 Clicking login button...")
+        login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
+        login_button.click()
 
-        # Wait for the error message to appear
+        print("⏳ Waiting for error message...")
         try:
-            error_element = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "alert-danger"))  # Update class if different
+            error_element = self.wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "alert-danger"))
             )
-            assert "invalid" in error_element.text.lower(), \
-                "❌ Error message does not contain 'invalid'. Found: " + error_element.text
-            print("✅ Error message displayed correctly:", error_element.text)
+            error_text = error_element.text.strip()
+            assert "invalid" in error_text.lower(), \
+                f"❌ Error message doesn't contain 'invalid'. Found: {error_text}"
+            print("✅ Error message displayed correctly:", error_text)
         except Exception as e:
-            print("❌ Error message not found or did not match expectation.")
+            print("❌ Error message not found or didn't match expected content.")
             raise e

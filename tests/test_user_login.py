@@ -1,5 +1,4 @@
 import pytest
-import time
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
@@ -9,38 +8,38 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestUserLoginwithCorrectCredentials:
     def setup_method(self, method):
-        # Set up Chrome options to run in headless mode
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run Chrome in headless mode
-        chrome_options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for Docker)
-        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome Docker's limited memory
-        chrome_options.add_argument("--remote-debugging-port=9222")  # Optional for debugging
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-        # Set the executable path of ChromeDriver inside the Docker container
-        service = ChromeService(executable_path="/usr/local/bin/chromedriver")  # Path in Docker container
-        self.driver = Chrome(service=service, options=chrome_options)  # Pass Chrome options
-        self.driver.maximize_window()
-        self.vars = {}
+        # Using default path since chromedriver is already in /usr/local/bin
+        service = ChromeService()
+        self.driver = Chrome(service=service, options=chrome_options)
+        self.wait = WebDriverWait(self.driver, 10)
 
     def teardown_method(self, method):
         self.driver.quit()
 
     def test_userLoginwithCorrectCredentials(self):
-        self.driver.get("http://localhost:8000/login/")  # URL for your Django app
-        time.sleep(0.5)
+        print("🔎 Opening login page...")
+        self.driver.get("http://localhost:8000/login/")
 
-        self.driver.find_element(By.NAME, "username").send_keys("nived")
-        time.sleep(0.5)
+        print("🧪 Entering username...")
+        username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
+        username_input.send_keys("nived")
 
-        self.driver.find_element(By.NAME, "password").send_keys("qwerty")
-        time.sleep(0.5)
+        print("🧪 Entering password...")
+        password_input = self.driver.find_element(By.NAME, "password")
+        password_input.send_keys("qwerty")
 
-        self.driver.find_element(By.CSS_SELECTOR, ".btn-dark").click()
-        time.sleep(2)
+        print("🚀 Clicking login button...")
+        login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
+        login_button.click()
 
-        # Wait for a dashboard element to confirm successful login
+        print("⏳ Waiting for Dashboard to appear...")
         try:
-            dashboard_element = WebDriverWait(self.driver, 10).until(
+            self.wait.until(
                 EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Dashboard')]"))
             )
             print("✅ Successfully logged in. Dashboard is visible.")
@@ -48,6 +47,8 @@ class TestUserLoginwithCorrectCredentials:
             print("❌ Login might have failed. Dashboard element not found.")
             raise e
 
-        # Assert that the URL indicates dashboard or home
-        assert "dashboard" in self.driver.current_url.lower() or "home" in self.driver.current_url.lower(), \
-            "❌ Login did not redirect to dashboard/home. Current URL: " + self.driver.current_url
+        # Assert URL contains dashboard or home
+        current_url = self.driver.current_url.lower()
+        print(f"🌐 Redirected to: {current_url}")
+        assert "dashboard" in current_url or "home" in current_url, \
+            f"❌ Login did not redirect to dashboard/home. URL: {current_url}"
