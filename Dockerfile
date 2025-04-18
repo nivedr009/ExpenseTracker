@@ -28,6 +28,9 @@ RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com
     && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
     && rm chromedriver_linux64.zip
 
+# Copy chromedriver from your local machine to Docker container
+COPY drivers/chromedriver.exe /usr/local/bin/chromedriver
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

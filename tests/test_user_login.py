@@ -2,14 +2,23 @@ import pytest
 import time
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class TestUserLoginwithCorrectCredentials:
     def setup_method(self, method):
-        service = ChromeService(executable_path="C:\\chromedriver\\chromedriver.exe")  # Update path to ChromeDriver
-        self.driver = Chrome(service=service)
+        # Set up Chrome options to run in headless mode
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+        chrome_options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for Docker)
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome Docker's limited memory
+        chrome_options.add_argument("--remote-debugging-port=9222")  # Optional for debugging
+
+        # Set the executable path of ChromeDriver inside the Docker container
+        service = ChromeService(executable_path="/usr/local/bin/chromedriver")  # Path in Docker container
+        self.driver = Chrome(service=service, options=chrome_options)  # Pass Chrome options
         self.driver.maximize_window()
         self.vars = {}
 
@@ -17,7 +26,7 @@ class TestUserLoginwithCorrectCredentials:
         self.driver.quit()
 
     def test_userLoginwithCorrectCredentials(self):
-        self.driver.get("http://localhost:8000/login/")
+        self.driver.get("http://localhost:8000/login/")  # URL for your Django app
         time.sleep(0.5)
 
         self.driver.find_element(By.NAME, "username").send_keys("nived")

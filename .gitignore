@@ -16,3 +16,6 @@ __pycache__/
 
 # Ignore Docker-related files    
 .env  
+
+chromedriver.exe
+
