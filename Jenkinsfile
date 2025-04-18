@@ -34,8 +34,15 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running unit tests...'
-                bat 'docker-compose -p expensetracker run --rm web pytest tests/'
+                bat 'docker-compose -p expensetracker run --rm web pytest tests/ --maxfail=5 --disable-warnings --html=reports/test_report.html'
             }
+        }
+    }
+
+    post {
+        always {
+            // Archive test report HTML file
+            archiveArtifacts artifacts: 'reports/test_report.html', allowEmptyArchive: true
         }
     }
 }
