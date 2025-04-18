@@ -40,9 +40,10 @@ class TestUserLogout:
         login_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
         login_button.click()
 
-        print("⏳ Waiting for sidebar toggle button to appear...")
-        sidebar_toggle = self.wait.until(EC.presence_of_element_located((By.ID, "open-sidebar")))
-        print("✅ Sidebar toggle button is visible. Clicking it...")
+        # Wait until the element is visible and clickable
+        sidebar_toggle = self.wait.until(EC.element_to_be_clickable((By.ID, "open-sidebar")))
+        # Optionally scroll into view if needed
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", sidebar_toggle)
         sidebar_toggle.click()
 
         print("⏳ Waiting for 'Logout' link to appear...")
