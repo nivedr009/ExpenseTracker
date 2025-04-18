@@ -5,8 +5,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager  # Add this import
-import os  # For handling environment variables
+from webdriver_manager.chrome import ChromeDriverManager
+import os
 
 class TestViewTransactionRecords:
     def setup_method(self, method):
@@ -15,8 +15,7 @@ class TestViewTransactionRecords:
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
-        # Use webdriver-manager to automatically download and set up ChromeDriver
-        service = Service(ChromeDriverManager().install())  # Use ChromeDriverManager to handle ChromeDriver installation
+        service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service, options=chrome_options)
         self.wait = WebDriverWait(self.driver, 30)
 
@@ -25,8 +24,7 @@ class TestViewTransactionRecords:
 
     def test_viewTransactionRecords(self):
         print("🔎 Opening login page...")
-        # Ensure that you update the URL to use the Docker container's service name or IP
-        self.driver.get("http://web:8000/login/")  # Assuming 'web' is the Docker service name
+        self.driver.get("http://web:8000/login/")  # Update this if needed for your setup
 
         print("🧪 Entering username...")
         username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
@@ -45,17 +43,16 @@ class TestViewTransactionRecords:
         print("✅ 'View Records' link is visible. Clicking it...")
         view_records_link.click()
 
-        print("⏳ Waiting for transaction records page to load...")
+        print("⏳ Waiting for transaction records to load (checking for table rows)...")
         try:
             self.wait.until(
-                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Transaction Records')]"))
+                EC.presence_of_element_located((By.XPATH, "//tbody/tr"))
             )
-            print("✅ Transaction records page loaded successfully.")
+            print("✅ Transaction records table is populated.")
         except Exception as e:
-            print("❌ Failed to load transaction records page.")
+            print("❌ No transaction records found or table did not load.")
             raise e
 
-        # Assert URL contains 'records' or similar
         current_url = self.driver.current_url.lower()
         print(f"🌐 Redirected to: {current_url}")
         assert "records" in current_url, \
