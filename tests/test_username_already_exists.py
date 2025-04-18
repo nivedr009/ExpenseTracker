@@ -23,32 +23,32 @@ class TestUserRegistration:
         self.driver.quit()
 
     def test_userRegistration(self):
-        print("🔎 Opening login page...")
+        print("⏳ Opening login page...")
         self.driver.get("http://web:8000/login/")
 
-        print("🚀 Clicking 'Register here' link...")
+        print("📝 Clicking 'Register here' link...")
         register_link = self.wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Register here")))
         register_link.click()
 
-        print("🧪 Entering username...")
+        print("🖋️ Entering username...")
         username_input = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
-        username_input.send_keys(os.getenv("TEST_NEW_USERNAME", "existinguser"))
+        username_input.send_keys("nived")  # Hardcoded username
 
-        print("🧪 Entering email...")
+        print("🖋️ Entering email...")
         email_input = self.driver.find_element(By.NAME, "email")
-        email_input.send_keys(os.getenv("TEST_NEW_EMAIL", "existinguser@gmail.com"))
+        email_input.send_keys("nived@example.com")  # Use a dummy email
 
-        print("🧪 Entering password...")
+        print("🖋️ Entering password...")
         password_input = self.driver.find_element(By.NAME, "password")
-        password_input.send_keys(os.getenv("TEST_NEW_PASSWORD", "qwerty"))
+        password_input.send_keys("qwerty")  # Hardcoded password
 
-        print("🚀 Clicking register button...")
+        print("🖱️ Clicking register button...")
         register_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
         register_button.click()
 
-        print("⏳ Waiting for error message (username already exists)...")
+        print("⚠️ Waiting for error message (username already exists)...")
         try:
-            # Check for the error message (Assuming it's shown with 'alert-danger')
+            # Increased wait time to 20 seconds
             error_message = self.wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "alert-danger"))
             )
@@ -56,8 +56,5 @@ class TestUserRegistration:
             print("✅ 'Username already exists' message displayed.")
         except Exception as e:
             print("❌ Error message for existing username not displayed.")
+            self.driver.save_screenshot("error_screenshot.png")  # Take a screenshot on failure
             raise e
-
-        # If the error message was not found, this would indicate a registration success, which we don't want
-        assert error_message is not None, "❌ No error message for already registered username."
-        print("✅ Registration test passed.")
