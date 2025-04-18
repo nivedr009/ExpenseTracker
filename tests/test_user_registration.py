@@ -25,8 +25,7 @@ class TestUserRegistration:
 
     def test_userRegistration(self):
         print("🔎 Opening login page...")
-        # Ensure that you update the URL to use the Docker container's service name or IP
-        self.driver.get("http://web:8000/login/")  # Assuming 'web' is the Docker service name
+        self.driver.get("http://web:8000/login/")  # Adjust if needed
 
         print("🚀 Clicking 'Register here' link...")
         register_link = self.wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Register here")))
@@ -48,18 +47,18 @@ class TestUserRegistration:
         register_button = self.driver.find_element(By.CSS_SELECTOR, ".btn-dark")
         register_button.click()
 
-        print("⏳ Waiting for successful registration message...")
+        print("⏳ Waiting for dashboard to load (after registration)...")
         try:
-            self.wait.until(
-                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Registration successful')]"))
+            # Adjust the selector based on what uniquely identifies your dashboard
+            dashboard_element = self.wait.until(
+                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Dashboard')]"))
             )
-            print("✅ Registration successful message is visible.")
+            print("✅ Successfully redirected to dashboard.")
         except Exception as e:
-            print("❌ Registration might have failed. Success message not found.")
+            print("❌ Dashboard not loaded. Registration might have failed.")
             raise e
 
-        # Assert URL contains login or success page
         current_url = self.driver.current_url.lower()
         print(f"🌐 Redirected to: {current_url}")
-        assert "login" in current_url or "success" in current_url, \
-            f"❌ Registration did not redirect to login/success page. URL: {current_url}"
+        assert "dashboard" in current_url, \
+            f"❌ Registration did not redirect to dashboard. URL: {current_url}"
