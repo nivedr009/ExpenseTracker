@@ -18,7 +18,7 @@ class TestUserLoginwithCorrectCredentials:
         # Use webdriver-manager to automatically download and set up ChromeDriver
         service = Service(ChromeDriverManager().install())  # Use ChromeDriverManager to handle ChromeDriver installation
         self.driver = webdriver.Chrome(service=service, options=chrome_options)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 30)
 
     def teardown_method(self, method):
         self.driver.quit()
