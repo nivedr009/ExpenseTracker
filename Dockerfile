@@ -28,6 +28,11 @@ RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com
 # Install webdriver-manager
 RUN pip install webdriver-manager
 
+# Install pytest and pytest-html explicitly
+RUN pip install pytest==7.0.0 pytest-html==3.1.1
+
+
+
 # Set environment variables for headless Chrome and ChromeDriver path
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
