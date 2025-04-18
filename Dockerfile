@@ -26,10 +26,17 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) \
     && wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
     && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
-    && rm chromedriver_linux64.zip
+    && rm chromedriver_linux64.zip \
+    && chmod +x /usr/local/bin/chromedriver
 
-# Copy chromedriver from your local machine to Docker container
-COPY drivers/chromedriver.exe /usr/local/bin/chromedriver
+# Copy chromedriver from your local machine to Docker container (adjust path if needed)
+# Assuming you're copying the chromedriver binary from your local system, you should only do this if you have it in the "drivers" directory
+# If you don't need this step, you can remove it.
+COPY drivers/chromedriver /usr/local/bin/chromedriver
+
+# Ensure that chromedriver has executable permissions (if copying from local system)
+RUN chmod +x /usr/local/bin/chromedriver
+
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
