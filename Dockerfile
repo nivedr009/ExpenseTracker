@@ -12,35 +12,24 @@ RUN apt-get update \
     libnss3 libxss1 libgdk-pixbuf2.0-0 \
     && pip install --upgrade pip
 
-# Create a directory for Chrome installation and change permissions
-RUN mkdir -p /tmp/chrome-install \
-    && cd /tmp/chrome-install
-
-# Install Google Chrome
+# Install Google Chrome (latest version for Linux)
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && dpkg -i google-chrome-stable_current_amd64.deb \
     || apt-get install -f -y \
     && rm google-chrome-stable_current_amd64.deb
 
-# Install ChromeDriver
+# Install ChromeDriver dynamically (latest version for Linux)
 RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) \
     && wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
     && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
     && rm chromedriver_linux64.zip \
     && chmod +x /usr/local/bin/chromedriver
 
-# Copy chromedriver from your local machine to Docker container (adjust path if needed)
-# Assuming you're copying the chromedriver binary from your local system, you should only do this if you have it in the "drivers" directory
-# If you don't need this step, you can remove it.
-COPY drivers/chromedriver /usr/local/bin/chromedriver
-
-# Ensure that chromedriver has executable permissions (if copying from local system)
-RUN chmod +x /usr/local/bin/chromedriver
-
-
-# Set environment variables
+# Set environment variables for headless Chrome and ChromeDriver path
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV GOOGLE_CHROME_BIN=/usr/bin/google-chrome-stable
+ENV CHROME_DRIVER=/usr/local/bin/chromedriver
 
 # Set work directory
 WORKDIR /app
